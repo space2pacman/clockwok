@@ -5,8 +5,8 @@ class Tasks {
     this._tasksList = new Proxy([], {
       set(target, property, value) {
         target[property] = value;
-        
-        if (typeof value === 'object') {
+
+        if (value instanceof Task) {
           value.timerId = setInterval((function tick() {
             value.run();
             
@@ -20,7 +20,7 @@ class Tasks {
   }
 
   add(params) {
-    const task = new Task(params.name, params.callback, params.time);
+    const task = new Task(params.name, params.time, params.callback);
 
     this._tasksList.push(task);
 

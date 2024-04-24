@@ -1,8 +1,8 @@
 class Task {
-  constructor(name, callback, time) {
+  constructor(name, time, callback) {
     this._name = name;
-    this._callback = callback;
     this._time = time;
+    this._callback = callback;
     this._timerId = null;
   }
 
