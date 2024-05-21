@@ -1,13 +1,21 @@
-class Task {
-  constructor(name, time, callback) {
-    this._name = name;
+const EventEmitter = require('events');
+
+class Task extends EventEmitter {
+  constructor(time, callback) {
+    super();
+
     this._time = time;
     this._callback = callback;
     this._timerId = null;
-  }
 
-  get name() {
-    return this._name;
+    this._event = {
+      runs: 0,
+      stop: () => {
+        this.emit('stop');
+        
+        clearInterval(this._timerId);
+      }
+    }
   }
 
   get time() {
@@ -23,11 +31,9 @@ class Task {
   }
 
   run() {
-    this._callback();
-  }
+    this._event.runs = this._event.runs + 1;
 
-  cancel() {
-    clearInterval(this._timerId);
+    this._callback(this._event);
   }
 }
 

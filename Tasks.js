@@ -2,35 +2,40 @@ const Task = require('./Task');
 
 class Tasks {
   constructor() {
-    this._tasksList = new Proxy([], {
-      set(target, property, value) {
-        target[property] = value;
-
-        if (value instanceof Task) {
-          value.timerId = setInterval((function tick() {
-            value.run();
-            
-            return tick;
-          })(), value.time);
-        }
-
-        return true;
-      }
-    });
+    this._tasksList = [];
+    this._currentTaskIndex = null;
   }
 
   add(params) {
-    const task = new Task(params.name, params.time, params.callback);
+    const task = new Task(params.time, params.callback);
 
     this._tasksList.push(task);
-
-    return task;
   }
 
-  find(name) {
-    const tasks = this._tasksList.filter(task => task.name === name);
+  runTask() {
+    const task = this._tasksList[this._currentTaskIndex];
 
-    return tasks;
+    if (!task) {
+      return;
+    }
+
+    task.timerId = setInterval(() => {
+      task.run();
+    }, task.time);
+
+    task.on('stop', () => {
+      this._currentTaskIndex = this._currentTaskIndex + 1;
+
+      this.runTask();
+    });
+  }
+
+  start() {
+    if (this._currentTaskIndex === null) {
+      this._currentTaskIndex = 0;
+    }
+
+    this.runTask();
   }
 }
 
