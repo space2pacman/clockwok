@@ -3,7 +3,6 @@ const Task = require('./Task');
 class Tasks {
   constructor() {
     this._tasksList = [];
-    this._currentTaskIndex = null;
   }
 
   add(params) {
@@ -13,7 +12,7 @@ class Tasks {
   }
 
   runTask() {
-    const task = this._tasksList[this._currentTaskIndex];
+    const task = this._tasksList[0];
 
     if (!task) {
       return;
@@ -24,17 +23,13 @@ class Tasks {
     }, task.time);
 
     task.on('stop', () => {
-      this._currentTaskIndex = this._currentTaskIndex + 1;
+      this._tasksList = this._tasksList.slice(1);
 
       this.runTask();
     });
   }
 
   start() {
-    if (this._currentTaskIndex === null) {
-      this._currentTaskIndex = 0;
-    }
-
     this.runTask();
   }
 }
