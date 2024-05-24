@@ -1,9 +1,10 @@
 const EventEmitter = require('events');
 
 class Task extends EventEmitter {
-  constructor(time, callback) {
+  constructor(id, time, callback) {
     super();
 
+    this._id = id;
     this._time = time;
     this._callback = callback;
     this._timerId = null;
@@ -34,6 +35,10 @@ class Task extends EventEmitter {
     this._event.runs = this._event.runs + 1;
 
     this._callback(this._event);
+  }
+
+  remove() {
+    this.emit('remove');
   }
 }
 
