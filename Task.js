@@ -19,6 +19,10 @@ class Task extends EventEmitter {
     }
   }
 
+  get id() {
+    return this._id;
+  }
+
   get time() {
     return this._time;
   }
