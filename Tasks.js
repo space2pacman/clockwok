@@ -2,33 +2,38 @@ const Task = require('./Task');
 
 class Tasks {
   constructor() {
-    this._tasksList = [];
+    this._tasksList = {};
   }
 
   add(params) {
     const task = new Task(params.id, params.time, params.callback);
+    const id = task.id;
 
-    this._tasksList.push(task);
+    if (this._tasksList[id] === undefined) {
+      this._tasksList[id] = [];
+    }
+
+    this._tasksList[id].push(task);
 
     task.on('remove', () => {
-      const index = this._tasksList.indexOf(task);
+      const index = this._tasksList[id].indexOf(task);
       
-      this._tasksList.splice(index, 1);
+      this._tasksList[id].splice(index, 1);
     });
   }
 
-  start() {
-    this._runTask();
+  start(id) {
+    this._runTask(id);
   }
 
   findById(id) {
-    const tasks = this._tasksList.filter(task => task.id === id);
+    const tasks = this._tasksList[id].filter(task => task.id === id);
 
     return tasks;
   }
 
-  _runTask() {
-    const task = this._tasksList[0];
+  _runTask(id) {
+    const task = this._tasksList[id][0];
 
     if (!task) {
       return;
@@ -39,9 +44,9 @@ class Tasks {
     }, task.time);
 
     task.on('stop', () => {
-      this._tasksList = this._tasksList.slice(1);
+      this._tasksList[id] = this._tasksList[id].slice(1);
 
-      this._runTask();
+      this._runTask(id);
     });
   }
 }
