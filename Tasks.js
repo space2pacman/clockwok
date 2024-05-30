@@ -16,6 +16,8 @@ class Tasks {
     this._tasksList[id].push(task);
 
     task.on('remove', () => {
+      clearInterval(task.timerId);
+
       const index = this._tasksList[id].indexOf(task);
       
       this._tasksList[id].splice(index, 1);
@@ -27,9 +29,13 @@ class Tasks {
   }
 
   findById(id) {
-    const tasks = this._tasksList[id].filter(task => task.id === id);
+    const tasks = this._tasksList[id];
 
-    return tasks;
+    if (!tasks) {
+      return [];
+    }
+
+    return tasks.filter(task => task.id === id);
   }
 
   _runTask(id) {
