@@ -13,8 +13,6 @@ class Task extends EventEmitter {
       runs: 0,
       stop: () => {
         this.emit('stop');
-        
-        clearInterval(this._timerId);
       }
     }
   }

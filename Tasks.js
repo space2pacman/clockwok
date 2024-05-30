@@ -50,6 +50,8 @@ class Tasks {
     }, task.time);
 
     task.on('stop', () => {
+      clearInterval(task.timerId);
+
       this._tasksList[id] = this._tasksList[id].slice(1);
 
       this._runTask(id);
